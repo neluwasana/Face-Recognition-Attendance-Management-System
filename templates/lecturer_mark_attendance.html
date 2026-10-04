@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mark Attendance - Lecturer Dashboard</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='mark_attendance.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='lecturer.css') }}">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="profile">
+                <!-- Lecturer Initials Circle -->
+                <div class="profile-avatar initials-avatar">
+                    {{ lecturer.initials }}
+                </div>
+                <div class="profile-info">
+                    <h2>{{ lecturer.lecturer_name }}</h2>
+                    <p>Lecturer</p>
+                </div>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/lecturer/dashboard" class="nav-link">📊 Lecturer Dashboard</a></li>
+                <li><a href="/lecturer/timetable" class="nav-link">⏰ Time Table</a></li>
+                <li><a href="/lecturer/mark_attendance" class="nav-link active">✅ Mark Attendance</a></li>
+                <li><a href="/lecturer/reports" class="nav-link">📈 Reports</a></li>
+            </ul>
+            <ul class="nav-menu logout">
+                <li><a href="/logout">🚪 Logout</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <!-- ─── SECTION 3: MARK ATTENDANCE ─── -->
+            <div id="mark-attendance-section" class="lecturer-section active">
+                <div class="page-header header-date">
+                    <div>
+                        <h1>Mark Student Attendance</h1>
+                        <p class="subtitle">Position student face in front of the camera to log attendance</p>
+                    </div>
+                    <div class="date-badge">
+                        📅 <span id="currentDateDisplay">Loading...</span>
+                    </div>
+                </div>
+
+                <div class="attendance-panel card-panel">
+                    <div class="session-panel-header">
+                        <h2>Session Details</h2>
+                        <span id="sessionStatusBadge" class="status-badge session-inactive-badge">Session Inactive</span>
+                    </div>
+                    <div class="form-row select-row">
+                        <div class="select-group">
+                            <label for="courseSelect" class="form-label">Select Course *</label>
+                            <select id="courseSelect" class="form-select">
+                                <option value="">-- Choose Course --</option>
+                            </select>
+                        </div>
+                        <div class="select-group">
+                            <label for="yearSelect" class="form-label">Select Year *</label>
+                            <select id="yearSelect" class="form-select" disabled>
+                                <option value="">-- Choose Year --</option>
+                                <option value="1st Year">1st Year</option>
+                                <option value="2nd Year">2nd Year</option>
+                                <option value="3rd Year">3rd Year</option>
+                            </select>
+                        </div>
+                        <div class="select-group">
+                            <label for="semesterSelect" class="form-label">Select Semester *</label>
+                            <select id="semesterSelect" class="form-select" disabled>
+                                <option value="">-- Choose Semester --</option>
+                                <option value="I Semester">I Semester</option>
+                                <option value="II Semester">II Semester</option>
+                                <option value="III Semester">III Semester</option>
+                                <option value="IV Semester">IV Semester</option>
+                                <option value="V Semester">V Semester</option>
+                                <option value="VI Semester">VI Semester</option>
+                            </select>
+                        </div>
+                        <div class="select-group">
+                            <label for="studyModeSelect" class="form-label">Study Mode *</label>
+                            <select id="studyModeSelect" class="form-select" disabled>
+                                <option value="">-- Choose Mode --</option>
+                                <option value="Full Time">Full Time</option>
+                                <option value="Part Time">Part Time</option>
+                            </select>
+                        </div>
+                        <div class="select-group">
+                            <label for="subjectSelect" class="form-label">Select Subject *</label>
+                            <select id="subjectSelect" class="form-select" disabled>
+                                <option value="">-- Choose Subject --</option>
+                            </select>
+                        </div>
+                        <div class="select-group">
+                            <label for="lecturerSelect" class="form-label">Assigned Lecturer</label>
+                            <select id="lecturerSelect" class="form-select" disabled>
+                                <option value="">-- Choose Lecturer --</option>
+                            </select>
+                        </div>
+                        <div class="select-group">
+                            <label for="sessionDisplay" class="form-label">Active Session Today</label>
+                            <input type="text" id="sessionDisplay" class="form-select session-readonly-input" placeholder="-- No Session Scheduled --" readonly>
+                        </div>
+                    </div>
+                    <input type="hidden" id="lectureName">
+                    <input type="hidden" id="lecturerName">
+                </div>
+
+                <!-- Two Column Layout for Scanner & Manual Marking -->
+                <div class="attendance-two-column">
+                    <!-- Left Column: Manual Marking & Log -->
+                    <div class="attendance-left-column">
+                        <!-- Manual Attendance Marking Panel -->
+                        <div class="attendance-panel card-panel">
+                            <h2>Manual Attendance</h2>
+                            <div id="manualAttendanceContainer">
+                                <div class="manual-attendance-placeholder">
+                                    Select session details to load student index numbers.
+                                </div>
+                            </div>
+                            <div id="manualAttendanceFooter" class="lecturer-manual-footer" style="display: none;">
+                                <span class="lecturer-marked-label">Total Marked Students:</span>
+                                <span id="totalMarkedCount" class="lecturer-marked-count">0</span>
+                            </div>
+                        </div>
+
+                        <!-- Recognition Log Panel -->
+                        <div class="attendance-panel card-panel">
+                            <h2>Recognition Log</h2>
+                            <div id="resultBox" class="result-box"></div>
+                            <div class="live-log" id="liveLog">
+                                <div class="log-placeholder">
+                                    Waiting for recognition activity...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Live Camera Feed -->
+                    <div class="attendance-right-column">
+                        <!-- Live Time Panel -->
+                        <div class="attendance-panel card-panel lecturer-live-time-panel">
+                            <h2>Live Time</h2>
+                            <div id="liveTime" class="lecturer-live-time-value">Loading...</div>
+                        </div>
+
+                        <div class="attendance-panel card-panel">
+                            <h2>Live Camera Feed</h2>
+                            <div class="camera-box">
+                                <div class="camera-stream-container">
+                                    <video id="liveVideo" autoplay playsinline class="video-hidden"></video>
+                                    <div class="camera-standby" id="cameraStandby">
+                                        <div class="standby-icon">👁️</div>
+                                        <h3>Scanner Standby</h3>
+                                        <p>Select session details above and click "Start Scanner" to begin facial recognition.</p>
+                                    </div>
+                                    <div class="scanner-overlay" id="scannerOverlay" style="display: none;">
+                                        <div class="scanner-bracket sc-top-left"></div>
+                                        <div class="scanner-bracket sc-top-right"></div>
+                                        <div class="scanner-bracket sc-bottom-left"></div>
+                                        <div class="scanner-bracket sc-bottom-right"></div>
+                                        <div class="scanner-scanline"></div>
+                                    </div>
+                                </div>
+                                <div class="camera-controls">
+                                    <button id="startCameraBtn" class="btn btn-success">📷 Start Scanner</button>
+                                    <button id="captureMarkBtn" class="btn btn-primary btn-hidden">🎯 Capture &amp; Mark</button>
+                                    <button id="stopCameraBtn" class="btn btn-danger btn-hidden">🛑 Stop Scanner</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Files -->
+    <!-- jsQR: local copy (offline-safe QR decoder) -->
+    <script src="{{ url_for('static', filename='js/jsQR.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/mark_attendance.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/lecturer.js') }}"></script>
+</body>
+</html>

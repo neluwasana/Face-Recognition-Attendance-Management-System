@@ -1,0 +1,409 @@
+/* ============================================================
+   student.css  –  Styles for all Student Panel pages
+   (dashboard, details, timetable, attendance)
+   ============================================================ */
+
+
+/* ── QR Code Section (Student Dashboard) ── */
+.qr-section-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.qr-section-card h2 {
+    margin-bottom: 5px;
+}
+
+/* Large QR code container */
+.qr-code-box {
+    margin: 30px auto;
+    width: 280px;
+    height: 280px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: white;
+    border-radius: var(--border-radius-md);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+    padding: 10px;
+}
+
+.qr-code-box img {
+    width: 260px;
+    height: 260px;
+    object-fit: contain;
+}
+
+/* Student name shown below QR */
+.qr-student-name {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--color-text-main);
+    margin: 18px 0 6px 0;
+}
+
+/* Student ID shown below name */
+.qr-student-id {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-primary);
+    margin: 0 0 24px 0;
+}
+
+/* Download button on dashboard */
+.qr-download-btn {
+    margin: 0 auto;
+    padding: 12px 32px;
+    font-size: 15px;
+}
+
+
+/* ── Student Details Page ── */
+
+/* Outer card layout (flex row) */
+.student-details-layout {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+/* The details table column */
+.student-details-col {
+    flex: 1;
+    min-width: 300px;
+}
+
+/* Details table */
+.student-details-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* Each table row separator */
+.student-details-table tr {
+    border-bottom: 1px solid var(--color-border);
+}
+
+/* Last row has no bottom border */
+.student-details-table tr:last-child {
+    border-bottom: none;
+}
+
+/* Label (th) cells */
+.student-details-table th {
+    padding: 12px 18px;
+    text-align: left;
+    color: var(--color-primary);
+    width: 35%;
+    font-weight: 600;
+}
+
+/* Value (td) cells */
+.student-details-table td {
+    padding: 12px 18px;
+    color: var(--color-text-main);
+}
+
+
+/* ── Student Timetable Page – Filter Bar ── */
+
+/* Outer filter card row */
+.timetable-filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: flex-end;
+    margin-bottom: 20px;
+    padding: 16px;
+    background: var(--bg-card);
+    border-radius: var(--border-radius-md);
+    border: 1px solid var(--color-border);
+}
+
+/* Individual filter group */
+.timetable-filter-group {
+    flex: 1;
+    min-width: 140px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+/* Filter labels */
+.timetable-filter-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--color-text-muted);
+}
+
+/* Filter selects */
+.timetable-filter-group select {
+    width: 100%;
+    height: 44px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    padding: 0 12px;
+    font-family: var(--font-secondary);
+    font-size: 14px;
+    background: var(--bg-main);
+    color: var(--color-text-main);
+}
+
+/* Filter buttons group */
+.timetable-filter-btns {
+    display: flex;
+    gap: 10px;
+}
+
+/* Filter button */
+.timetable-filter-btns .btn-filter {
+    height: 44px;
+    padding: 0 20px;
+    background: linear-gradient(135deg, var(--color-primary), #6d5ef7);
+    color: #fff;
+    border: none;
+    border-radius: var(--border-radius-md);
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* Reset button */
+.timetable-filter-btns .btn-reset {
+    height: 44px;
+    padding: 0 16px;
+    background: #6b7280;
+    color: #fff;
+    border: none;
+    border-radius: var(--border-radius-md);
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* Subject name cell – bold */
+.col-subject-name {
+    font-weight: 600;
+}
+
+/* Location pill inside timetable */
+.location-pill {
+    background: rgba(79, 70, 229, 0.08);
+    color: var(--color-primary);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+/* Cancelled status badge */
+.status-cancelled-badge {
+    background: #fee2e2;
+    color: #dc2626;
+    padding: 4px 8px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    display: inline-block;
+}
+
+/* Cancel reason text below cancelled badge */
+.cancel-reason-text {
+    font-size: 11px;
+    color: #ef4444;
+    margin-top: 4px;
+    font-style: italic;
+}
+
+/* Active status badge */
+.status-active-badge {
+    background: #dcfce7;
+    color: #16a34a;
+    padding: 4px 8px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    display: inline-block;
+}
+
+/* Empty table message */
+.table-empty-msg {
+    padding: 30px;
+    color: var(--color-text-muted);
+    font-style: italic;
+    text-align: center;
+}
+
+
+/* ── Student Attendance Page ── */
+
+/* Eligibility row highlight (row turns slightly red) */
+.eligibility-row-danger td {
+    background-color: rgba(220, 38, 38, 0.04);
+}
+
+/* Eligibility badge base */
+.eligibility-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    display: inline-block;
+}
+
+/* Green = eligible */
+.eligibility-badge.eligible {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+/* Red = not eligible */
+.eligibility-badge.ineligible {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+/* Attendance percentage badge */
+.pct-badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    display: inline-block;
+}
+
+/* Green percentage (>=80%) */
+.pct-ok {
+    background: rgba(16, 185, 129, 0.08);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.15);
+}
+
+/* Red percentage (<80%) */
+.pct-warn {
+    background: rgba(220, 38, 38, 0.08);
+    color: #dc2626;
+    border: 1px solid rgba(220, 38, 38, 0.2);
+}
+
+/* Warning label below subject name */
+.warning-label {
+    font-size: 11px;
+    color: #dc2626;
+    font-style: italic;
+    margin-top: 2px;
+    display: block;
+}
+
+/* Attendance summary / history table wrapper */
+.attendance-table-wrapper {
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-sm);
+    overflow-x: auto;
+    scrollbar-width: thin; /* Firefox support */
+    scrollbar-color: #b7c4d6 #e5e7eb; /* Firefox support */
+}
+
+.attendance-table-wrapper::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.attendance-table-wrapper::-webkit-scrollbar-track {
+    background: #e5e7eb;
+    border-radius: 10px;
+}
+
+.attendance-table-wrapper::-webkit-scrollbar-thumb {
+    background: #b7c4d6;
+    border-radius: 10px;
+}
+
+.attendance-table-wrapper::-webkit-scrollbar-thumb:hover {
+    background: #879ab6;
+}
+
+/* The table inside the wrapper */
+.attendance-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+/* Table header row background */
+.attendance-table thead tr {
+    background: #f1f5f9;
+    border-bottom: 1px solid var(--color-border);
+}
+
+/* Header cells */
+.attendance-table th {
+    padding: 14px 18px;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--color-text-main);
+}
+
+/* Body rows */
+.attendance-table tbody tr {
+    border-bottom: 1px solid var(--color-border);
+}
+
+/* Body cells */
+.attendance-table td {
+    padding: 14px 18px;
+    font-size: 14px;
+}
+
+/* Bold subject / lecture name cells */
+.attendance-table .td-subject {
+    font-weight: 600;
+    color: var(--color-text-main);
+}
+
+/* Time badge inside attendance history */
+.time-pill {
+    background: rgba(6, 182, 212, 0.08);
+    color: #0891b2;
+    border: 1px solid rgba(6, 182, 212, 0.15);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+/* "Present" status badge */
+.status-present-badge {
+    background: #dcfce7;
+    color: #16a34a;
+    padding: 4px 8px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    display: inline-block;
+}
+
+/* Formula info box below the summary table */
+.attendance-formula-note {
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: rgba(79, 70, 229, 0.05);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--color-text-muted);
+}
+\n
+/* Enforce profile image display requirements */
+.profile-avatar img,
+.qr-code-box img,
+#studentProfilePic,
+.face-preview,
+.student-avatar img,
+.profile-pic img {
+    object-fit: cover !important;
+    aspect-ratio: 1/1 !important;
+    filter: none !important; 
+}

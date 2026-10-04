@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - Face Attendance System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='student.css') }}">
+</head>
+<body>
+    <div class="dashboard-container">
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="profile">
+                <div class="profile-avatar">
+                    <img src="/student/profile-pic" alt="Profile">
+                </div>
+                <div class="profile-info">
+                    <h2>{{ student.full_name }}</h2>
+                    <p>Student</p>
+                </div>
+            </div>
+
+            <ul class="nav-menu">
+                <li><a href="/student/dashboard" class="active">📊 Dashboard</a></li>
+                <li><a href="/student/details">👥 View My Details</a></li>
+                <li><a href="/student/timetable">⏰ View Time Table</a></li>
+                <li><a href="/student/attendance">📈 View Attendance</a></li>
+            </ul>
+
+            <ul class="nav-menu logout">
+                <li><a href="/logout">🚪 Logout</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <!-- Page Heading -->
+            <div class="header-date">
+                <h1>Student Dashboard</h1>
+                <p>Welcome back, <span class="font-bold">{{ student.full_name }}</span>!</p>
+            </div>
+
+            <!-- QR Code Card -->
+            <div class="card-panel qr-section-card text-center">
+                <h2>Your Attendance QR Code</h2>
+                <p class="text-muted">Present this QR code to the scanner or keep it saved for verification.</p>
+
+                <!-- QR Code Image -->
+                <div class="qr-code-box">
+                    <img id="qrCodeImg"
+                         src="https://api.qrserver.com/v1/create-qr-code/?size=260x260&data={{ student.student_id | urlencode }}"
+                         alt="QR Code">
+                </div>
+
+                <!-- Student Name -->
+                <p class="qr-student-name">{{ student.full_name }}</p>
+
+                <!-- Student ID -->
+                <p class="qr-student-id">{{ student.student_id }}</p>
+
+                <!-- Download Button -->
+                <button id="downloadQR" class="btn btn-primary btn-glow qr-download-btn">
+                    📥 Download QR Code
+                </button>
+            </div>
+
+        </div><!-- /main-content -->
+    </div><!-- /dashboard-container -->
+
+    <script src="{{ url_for('static', filename='js/student.js') }}"></script>
+</body>
+</html>

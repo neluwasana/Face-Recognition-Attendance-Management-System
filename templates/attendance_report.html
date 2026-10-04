@@ -1,0 +1,227 @@
+<!-- templates/attendance_report.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Report - Face Attendance System</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='attendance_report.css') }}">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="profile">
+                <div class="profile-avatar"><img src="{{ url_for('static', filename='images/WhatsApp Image 2026-05-22 at 7.16.37 PM.jpeg') }}" alt="Profile"></div>
+                <div class="profile-info">
+                  <h2> ATI Nawalapitiya</h2>
+                    <p>System Administrator</p>
+                </div>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/dashboard">📊 Dashboard</a></li>
+                <li><a href="/student_management">👥 Student Management</a></li>
+                <li><a href="/academic_management">📚 Academic Management</a></li>
+                 <li><a href="/time_tabel">⏰ Time Table</a></li>
+                <li><a href="/mark_attendance">✅ Mark Attendance</a></li>
+                <li><a href="/attendance_report" class="active">📈 Attendance Report</a></li>
+            </ul>
+            <ul class="nav-menu logout">
+                <li><a href="/logout">🚪 Logout</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <div class="page-header header-date">
+                <div>
+                    <h1>📈 Attendance Report</h1>
+                    <p class="subtitle">Search, filter, and export students attendance logs</p>
+                </div>
+                <div class="date-badge">
+                    📅 <span id="currentDateDisplay">Loading...</span>
+                </div>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="summary-cards">
+                <div class="summary-card card-panel">
+                    <div class="summary-icon icon-blue">📊</div>
+                    <div class="summary-info">
+                        <div class="num" id="summTotal">-</div>
+                        <div class="lbl">Total Records</div>
+                    </div>
+                </div>
+                <div class="summary-card card-panel">
+                    <div class="summary-icon icon-green">✅</div>
+                    <div class="summary-info">
+                        <div class="num" id="summPresent">-</div>
+                        <div class="lbl">Present Logs</div>
+                    </div>
+                </div>
+                <div class="summary-card card-panel">
+                    <div class="summary-icon icon-violet">👥</div>
+                    <div class="summary-info">
+                        <div class="num" id="summStudents">-</div>
+                        <div class="lbl">Unique Students</div>
+                    </div>
+                </div>
+                <div class="summary-card card-panel">
+                    <div class="summary-icon icon-teal">📚</div>
+                    <div class="summary-info">
+                        <div class="num" id="summLectures">-</div>
+                        <div class="lbl">Unique Lectures</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters Panel -->
+            <div class="report-panel card-panel">
+                <h2>🔍 Filter Records</h2>
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label for="filterDate">Date</label>
+                        <input type="date" id="filterDate" title="Filter by Date" />
+                    </div>
+                    <div class="filter-group">
+                        <label for="filterStudent">Student</label>
+                        <input type="text" id="filterStudent" placeholder="Name or Student ID" />
+                    </div>
+                    <div class="filter-group">
+                        <label for="filterDepartment">Department</label>
+                        <select id="filterDepartment">
+                            <option value="">All Departments</option>
+                            <option value="HNDBF">HNDBF</option>
+                            <option value="HNDE">HNDE</option>
+                            <option value="HNDIT">HNDIT</option>
+                            <option value="HNDM">HNDM</option>
+                            <option value="HNDTHM">HNDTHM</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="filterYear">Year</label>
+                        <select id="filterYear">
+                            <option value="">All Years</option>
+                            <option value="1st Year">1st Year</option>
+                            <option value="2nd Year">2nd Year</option>
+                            <option value="3rd Year">3rd Year</option>
+                            <option value="4th Year">4th Year</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="filterSemester">Semester</label>
+                        <select id="filterSemester">
+                            <option value="">All Semesters</option>
+                            <option value="I Semester">I Semester</option>
+                            <option value="II Semester">II Semester</option>
+                            <option value="III Semester">III Semester</option>
+                            <option value="IV Semester">IV Semester</option>
+                            <option value="V Semester">V Semester</option>
+                            <option value="VI Semester">VI Semester</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="filterLecture">Lecture</label>
+                        <input type="text" id="filterLecture" placeholder="e.g. DSA-01" />
+                    </div>
+                    <div class="filter-group">
+                        <label for="filterStudyMode">Study Mode</label>
+                        <select id="filterStudyMode">
+                            <option value="">All Modes</option>
+                            <option value="Full Time">Full Time</option>
+                            <option value="Part Time">Part Time</option>
+                        </select>
+                    </div>
+                    <div class="filter-buttons">
+                        <button id="filterBtn" class="btn btn-primary">🔍 Filter</button>
+                        <button id="resetBtn" class="btn btn-secondary">↺ Reset</button>
+                        <button id="exportBtn" class="btn btn-success">⬇ Export CSV</button>
+                        <button id="exportPdfBtn" class="btn btn-pdf">📄 PDF</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PDF Filter Info (hidden on screen; shown only when printing selected rows) -->
+            <div id="pdfFilterInfo" class="pdf-filter-info" style="display:none;">
+                <table class="pdf-filter-table">
+                    <tbody>
+                        <tr><td class="pdf-lbl">Subject</td><td class="pdf-sep">:</td><td class="pdf-val" id="pdfSubject"></td></tr>
+                        <tr><td class="pdf-lbl">Year</td><td class="pdf-sep">:</td><td class="pdf-val" id="pdfYear"></td></tr>
+                        <tr><td class="pdf-lbl">Semester</td><td class="pdf-sep">:</td><td class="pdf-val" id="pdfSemester"></td></tr>
+                        <tr><td class="pdf-lbl">Lecturer</td><td class="pdf-sep">:</td><td class="pdf-val" id="pdfLecturer"></td></tr>
+                        <tr><td class="pdf-lbl">Date</td><td class="pdf-sep">:</td><td class="pdf-val" id="pdfDate"></td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Table Panel -->
+            <div class="report-panel card-panel table-panel">
+                <h2>📋 Attendance Records</h2>
+                <div class="table-wrapper">
+                    <table id="reportTable">
+                        <thead>
+                            <tr>
+                                <th class="col-chk"><input type="checkbox" id="selectAllRows" title="Select all rows"></th>
+                                <th class="col-no">No</th>
+                                <th>Student ID</th>
+                                <th>Name</th>
+                                <th>Year</th>
+                                <th>Semester</th>
+                                <th>Study Mode</th>
+                                <th>Lecture / Subject</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th class="col-status">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reportBody">
+                            <tr><td colspan="10" class="empty-msg">Loading records...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+   <!-- Templates used by attendance_report.js -->
+    <!-- Live table row template -->
+    <template id="reportRowTemplate">
+        <tr class="data-row">
+            <td class="col-chk-val"><input type="checkbox" class="row-select"></td>
+            <td class="col-no-val"></td>
+            <td class="col-sid-val"></td>
+            <td class="col-name-val font-semibold"></td>
+            <td class="col-year-val"></td>
+            <td class="col-sem-val"></td>
+            <td class="col-mode-val"><span class="badge"></span></td>
+            <td class="col-lecture-val"></td>
+            <td class="col-date-val"></td>
+            <td class="col-time-val"></td>
+            <td class="col-status-val"><span class="badge badge-present">Present</span></td>
+        </tr>
+    </template>
+
+    <!-- Empty / error row template -->
+    <template id="emptyRowTemplate">
+        <tr>
+            <td colspan="11" class="empty-msg">
+                <span class="empty-msg-text"></span>
+            </td>
+        </tr>
+    </template>
+
+    <script src="{{ url_for('static', filename='js/attendance_report.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Time Table - Face Attendance System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='timetabel.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='student.css') }}">
+</head>
+<body>
+    <div class="dashboard-container">
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="profile">
+                <div class="profile-avatar">
+                    <img src="/student/profile-pic" alt="Profile">
+                </div>
+                <div class="profile-info">
+                    <h2>{{ student.full_name }}</h2>
+                    <p>Student</p>
+                </div>
+            </div>
+
+            <ul class="nav-menu">
+                <li><a href="/student/dashboard">📊 Dashboard</a></li>
+                <li><a href="/student/details">👥 View My Details</a></li>
+                <li><a href="/student/timetable" class="active">⏰ View Time Table</a></li>
+                <li><a href="/student/attendance">📈 View Attendance</a></li>
+            </ul>
+
+            <ul class="nav-menu logout">
+                <li><a href="/logout">🚪 Logout</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header-date">
+                <h1>📅 My Schedule</h1>
+                <p class="subtitle">Your lectures for the selected date: {{ today }}</p>
+            </div>
+
+            <!-- Filter Controls -->
+            <div class="timetable-filter-row">
+                <div class="timetable-filter-group">
+                    <label for="filterDate">Select Date</label>
+                    <input type="date" id="filterDate" value="{{ selected_date }}">
+                </div>
+            </div>
+
+            <!-- Timetable Table -->
+            <div class="card-panel timetable-table-container">
+                <table id="timetableTable">
+                    <thead>
+                        <tr>
+                            <th>Course</th>
+                            <th>Year</th>
+                            <th>Semester</th>
+                            <th>Study Mode</th>
+                            <th>Subject</th>
+                            <th>Lecturer</th>
+                            <th>Location</th>
+                            <th>Day / Date</th>
+                            <th>Start Time</th>
+                            <th>End Time</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="timetableBody">
+                        {% if timetable_entries %}
+                            {% for t in timetable_entries %}
+                                <tr class="data-row tt-row {% if t.get('is_cancelled') %}cancelled-row{% endif %}"
+                                    data-course="{{ t['course'] }}"
+                                    data-year="{{ t['year'] }}"
+                                    data-semester="{{ t['semester'] }}">
+
+                                    <td class="col-course">{{ t['course'] }}</td>
+                                    <td>{{ t['year'] }}</td>
+                                    <td>{{ t['semester'] }}</td>
+                                    <td>
+                                        <span class="badge {% if t.get('part_time_full_time') == 'Full Time' %}badge-dept{% else %}badge-mode-pt{% endif %}">
+                                            {{ t.get('part_time_full_time') or 'Full Time' }}
+                                        </span>
+                                    </td>
+                                    <td class="col-subject-name">{{ t['subject_name'] }}</td>
+                                    <td>{{ t['lecturer_name'] }}</td>
+                                    <td>
+                                        <span class="location-pill">{{ t['location'] }}</span>
+                                    </td>
+                                    <td>
+                                        {% if t.get('day') %}
+                                            {{ t['day'] }} {% if t.get('time_slot') %}({{ t['time_slot'] }}){% endif %}
+                                        {% else %}
+                                            {{ t['lecture_date'] }}
+                                        {% endif %}
+                                    </td>
+                                    <td><span class="time-badge">{{ t['start_time'] }}</span></td>
+                                    <td><span class="time-badge">{{ t['end_time'] }}</span></td>
+                                    <td>
+                                        {% if t.get('is_cancelled') %}
+                                            <span class="status-cancelled-badge">Cancelled</span>
+                                            {% if t.get('cancel_reason') %}
+                                                <div class="cancel-reason-text">Reason: {{ t['cancel_reason'] }}</div>
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="status-active-badge">Active</span>
+                                        {% endif %}
+                                    </td>
+
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="11" class="table-empty-msg">
+                                    No scheduled lectures found.
+                                </td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Timetable filter logic lives in timetabel.js -->
+    <script src="{{ url_for('static', filename='js/timetabel.js') }}"></script>
+</body>
+</html>

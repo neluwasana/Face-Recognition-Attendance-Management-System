@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile Details - Face Attendance System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='student.css') }}">
+</head>
+<body>
+    <div class="dashboard-container">
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="profile">
+                <div class="profile-avatar">
+                    <img src="/student/profile-pic" alt="Profile">
+                </div>
+                <div class="profile-info">
+                    <h2>{{ student.full_name }}</h2>
+                    <p>Student</p>
+                </div>
+            </div>
+
+            <ul class="nav-menu">
+                <li><a href="/student/dashboard">📊 Dashboard</a></li>
+                <li><a href="/student/details" class="active">👥 View My Details</a></li>
+                <li><a href="/student/timetable">⏰ View Time Table</a></li>
+                <li><a href="/student/attendance">📈 View Attendance</a></li>
+            </ul>
+
+            <ul class="nav-menu logout">
+                <li><a href="/logout">🚪 Logout</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header-date">
+                <h1>My Profile Details</h1>
+                <p class="subtitle">Read-only student registration profile</p>
+            </div>
+
+            <!-- Profile Info Card -->
+            <div class="card-panel student-details-card">
+                <div class="student-details-layout">
+
+                    <!-- Details Table -->
+                    <div class="student-details-col">
+                        <table class="student-details-table">
+                            <tbody>
+                                <tr>
+                                    <th>Full Name</th>
+                                    <td>{{ student.full_name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Student ID</th>
+                                    <td>{{ student.student_id }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Department / Course</th>
+                                    <td>{{ student.department }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Academic Year</th>
+                                    <td>{{ student.year }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Semester</th>
+                                    <td>{{ student.semester }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Email Address</th>
+                                    <td>{{ student.email or 'N/A' }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Phone Number</th>
+                                    <td>{{ student.phone or 'N/A' }}</td>
+                                </tr>
+                                <tr>
+                                    <th>NIC Number</th>
+                                    <td>{{ student.nic or 'N/A' }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Date of Birth</th>
+                                    <td>{{ student.dob or 'N/A' }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Gender</th>
+                                    <td>{{ student.gender or 'N/A' }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Religion</th>
+                                    <td>{{ student.religion or 'N/A' }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Address</th>
+                                    <td>{{ student.address or 'N/A' }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Registration Date</th>
+                                    <td>{{ student.registered_date or 'N/A' }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Status</th>
+                                    <td>
+                                        {% if student.status == 'Active' %}
+                                            <span class="status-badge status-active">Active</span>
+                                        {% else %}
+                                            <span class="status-badge status-inactive">Inactive</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/student.js') }}"></script>  
+</html>

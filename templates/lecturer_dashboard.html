@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecturer Dashboard - Face Attendance System</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='lecturer.css') }}">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="profile">
+                <!-- Lecturer Initials Circle -->
+                <div class="profile-avatar initials-avatar">
+                    {{ lecturer.initials }}
+                </div>
+                <div class="profile-info">
+                    <h2>{{ lecturer.lecturer_name }}</h2>
+                    <p>Lecturer</p>
+                </div>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/lecturer/dashboard" class="nav-link active">📊 Lecturer Dashboard</a></li>
+                <li><a href="/lecturer/timetable" class="nav-link">⏰ Time Table</a></li>
+                <li><a href="/lecturer/mark_attendance" class="nav-link">✅ Mark Attendance</a></li>
+                <li><a href="/lecturer/reports" class="nav-link">📈 Reports</a></li>
+            </ul>
+            <ul class="nav-menu logout">
+                <li><a href="/logout">🚪 Logout</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <!-- SECTION 1: LECTURER DASHBOARD  -->
+            <div id="dashboard-section" class="lecturer-section active">
+                <div class="page-header header-date">
+                    <div>
+                        <h1>Lecturer Dashboard</h1>
+                        <p class="subtitle">Welcome to your academic management panel</p>
+                    </div>
+                    <div class="date-badge">
+                        📅 <span id="lecturerDateDisplay">Loading...</span>
+                    </div>
+                </div>
+
+                <div class="lecturer-dashboard-grid">
+                    <!-- Profile Card -->
+                    <div class="card-panel lecturer-welcome-card">
+                        <div class="initials-avatar-large">
+                            {{ lecturer.initials }}
+                        </div>
+                        <h2 class="lecturer-name-heading">{{ lecturer.lecturer_name }}</h2>
+                        <p class="lecturer-role-label">Academic Lecturer</p>
+                        
+                        <div class="lecturer-profile-info">
+                            <div class="info-row">
+                                <span class="info-label">Email:</span>
+                                <span class="info-value">{{ lecturer.email or 'N/A' }}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">NIC Number:</span>
+                                <span class="info-value">{{ lecturer.nic or 'N/A' }}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Telephone:</span>
+                                <span class="info-value">{{ lecturer.tel_no or 'N/A' }}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Subjects:</span>
+                                <span class="info-value-subjects">{{ lecturer.subjects or 'N/A' }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Session Info Box -->
+                    <div class="card-panel lecturer-session-box">
+                        <h3 class="session-box-title">📋 Today's Session Info</h3>
+                        <div class="session-info-grid" id="sessionInfoGrid">
+                            <div class="session-info-item">
+                                <span class="session-info-label">📅 Date</span>
+                                <span class="session-info-value" id="sessionDate">{% if today_session %}{{ today_session.date }}{% else %}-{% endif %}</span>
+                            </div>
+                            <div class="session-info-item">
+                                <span class="session-info-label">🕐 Time</span>
+                                <span class="session-info-value" id="sessionTime">{% if today_session %}{{ today_session.time }}{% else %}-{% endif %}</span>
+                            </div>
+                            <div class="session-info-item">
+                                <span class="session-info-label">📚 Subject</span>
+                                <span class="session-info-value" id="sessionSubject">{% if today_session %}{{ today_session.subject }}{% else %}-{% endif %}</span>
+                            </div>
+                            <div class="session-info-item">
+                                <span class="session-info-label">🎓 Year</span>
+                                <span class="session-info-value" id="sessionYear">{% if today_session %}{{ today_session.year }}{% else %}-{% endif %}</span>
+                            </div>
+                            <div class="session-info-item">
+                                <span class="session-info-label">📖 Semester</span>
+                                <span class="session-info-value" id="sessionSemester">{% if today_session %}{{ today_session.semester }}{% else %}-{% endif %}</span>
+                            </div>
+                            <div class="session-info-item">
+                                <span class="session-info-label">⏰ Study Mode</span>
+                                <span class="session-info-value" id="sessionMode">{% if today_session %}{{ today_session.mode }}{% else %}-{% endif %}</span>
+                            </div>
+                        </div>
+                        {% if today_session %}
+                        <p class="session-hint" id="sessionHint" style="display: none;"></p>
+                        {% else %}
+                        <p class="session-hint" id="sessionHint">No sessions scheduled for today.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script src="{{ url_for('static', filename='js/lecturer.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,422 @@
+.tabs-container {
+    display: flex;
+    gap: 12px;
+    background-color: var(--bg-card);
+    padding: 12px;
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--color-border);
+}
+
+.tab-btn {
+    padding: 12px 24px;
+    border-radius: var(--border-radius-sm);
+    font-family: var(--font-primary);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--color-text-muted);
+    transition: var(--transition-smooth);
+    outline: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tab-btn:hover {
+    color: var(--color-text-main);
+    background: rgba(0, 0, 0, 0.02);
+}
+
+.tab-btn.active {
+    color: var(--color-primary);
+    background: rgba(79, 70, 229, 0.06);
+    border: 1px solid rgba(79, 70, 229, 0.15);
+    box-shadow: 0 4px 10px rgba(79, 70, 229, 0.05);
+}
+
+/* TAB CONTENT DISPLAY */
+.tab-content {
+    display: none;
+    animation: fadeIn 0.4s ease-out forwards;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.tab-content.active-content {
+    display: flex;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* TOOLBAR & LAYOUTS*/
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    background-color: var(--bg-card);
+    padding: 20px 24px;
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--color-border);
+    flex-wrap: wrap;
+}
+
+.search-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-grow: 1;
+    max-width: 500px;
+}
+
+.input-icon-group {
+    position: relative;
+    width: 100%;
+}
+
+.input-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-text-muted);
+    font-size: 16px;
+}
+
+.search-area input {
+    width: 100%;
+    height: 46px;
+    padding: 10px 14px 10px 42px;
+    border-radius: var(--border-radius-md);
+    border: 1px solid var(--color-border);
+    font-family: var(--font-primary);
+    font-size: 14px;
+    background-color: var(--bg-main);
+    outline: none;
+    transition: var(--transition-fast);
+}
+
+.search-area input:focus {
+    border-color: var(--color-primary);
+    background-color: #ffffff;
+    box-shadow: 0 0 0 4px var(--color-primary-glow);
+}
+
+
+
+/* TABLES IN ACADEMIC DASHBOARD*/
+.student-table-container {
+    overflow-x: auto;
+    padding: 0;
+}
+
+.student-table-container table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-secondary);
+    font-size: 14px;
+    text-align: left;
+}
+
+.student-table-container th, 
+.student-table-container td {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.student-table-container th {
+    background-color: rgba(248, 250, 252, 0.8);
+    font-weight: 700;
+    color: var(--color-text-muted);
+    font-family: var(--font-primary);
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.student-table-container tbody tr {
+    transition: var(--transition-fast);
+}
+
+.student-table-container tbody tr:hover {
+    background-color: rgba(79, 70, 229, 0.02);
+}
+
+.idTH {
+    width:100px;
+}
+.course-codeTH {
+    width: 150px;
+}
+.actionsTH {
+    width: 150px;
+    text-align: center;
+}
+
+
+
+/* Action button icons in row */
+.action-cell {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: var(--border-radius-sm);
+    border: 1px solid var(--color-border);
+    background: #ffffff;
+    cursor: pointer;
+    font-size: 14px;
+    transition: var(--transition-smooth);
+}
+
+.btn-action.edit:hover {
+    background-color: var(--color-warning-glow);
+    border-color: var(--color-warning);
+    color: var(--color-warning-hover);
+}
+
+.btn-action.delete:hover {
+    background-color: var(--color-danger-glow);
+    border-color: var(--color-danger);
+    color: var(--color-danger-hover);
+}
+
+/*  MODAL WINDOW STYLING */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.student-form-card {
+    background-color: #ffffff;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-lg);
+    width: 90%;
+    max-width: 500px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    animation: modalPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes modalPop {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.student-form-title {
+    padding: 24px 30px;
+    background-color: var(--bg-main);
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.student-form-title h3 {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--color-text-main);
+    letter-spacing: -0.5px;
+}
+
+.crossBtn {
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    color: var(--color-text-muted);
+    transition: var(--transition-fast);
+}
+
+.crossBtn:hover {
+    color: var(--color-danger);
+}
+
+form {
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-group label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--color-text-main);
+}
+
+.form-group input, 
+.form-group select {
+    height: 44px;
+    padding: 8px 14px;
+    border-radius: var(--border-radius-md);
+    border: 1px solid var(--color-border);
+    font-family: var(--font-primary);
+    font-size: 14px;
+    outline: none;
+    background-color: var(--bg-main);
+    transition: var(--transition-fast);
+}
+
+.form-group input:focus, 
+.form-group select:focus {
+    border-color: var(--color-primary);
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px var(--color-primary-glow);
+}
+
+.modal-footer-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    border-top: 1px solid var(--color-border);
+    padding-top: 20px;
+    margin-top: 10px;
+}
+
+/* Badges for courses/lecturers association */
+.badge-course {
+    background-color: rgba(79, 70, 229, 0.08);
+    color: var(--color-primary);
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: var(--border-radius-sm);
+    border: 1px solid rgba(79, 70, 229, 0.15);
+}
+
+.badge-lecturer {
+    background-color: rgba(6, 182, 212, 0.08);
+    color: #0891b2;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: var(--border-radius-sm);
+    border: 1px solid rgba(6, 182, 212, 0.15);
+}
+
+@media (max-width: 576px) {
+    .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .action-buttons button {
+        width: 100%;
+    }
+    .tabs-container {
+        flex-direction: column;
+    }
+}
+
+/* Textarea for Qualification field */
+.form-group textarea {
+    padding: 10px 14px;
+    border-radius: var(--border-radius-md);
+    border: 1px solid var(--color-border);
+    font-family: var(--font-primary);
+    font-size: 14px;
+    outline: none;
+    background-color: var(--bg-main);
+    transition: var(--transition-fast);
+    resize: vertical;
+    min-height: 80px;
+}
+
+.form-group textarea:focus {
+    border-color: var(--color-primary);
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px var(--color-primary-glow);
+}
+
+/* Modal scroll for tall forms like the Lecturer form */
+.student-form-card form {
+    max-height: 85vh;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgb(199, 199, 239) transparent;
+}
+
+
+/* Password show/hide toggle for lecturer form */
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.password-wrapper input {
+    width: 100%;
+    padding-right: 44px;
+}
+
+.toggle-password-btn {
+    position: absolute;
+    right: 12px;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font-size: 16px;
+    outline: none;
+    user-select: none;
+    line-height: 1;
+    color: var(--color-text-main, #0f172a);
+    width: auto;
+    height: auto;
+    margin: 0;
+    box-shadow: none;
+    transform: none;
+}
+
+.toggle-password-btn.slashed::after {
+    content: '';
+    position: absolute;
+    width: 1.2em;
+    height: 2px;
+    background: var(--color-text-main, #0f172a);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+

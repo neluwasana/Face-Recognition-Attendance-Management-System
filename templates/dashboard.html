@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Attendance System</title>
+     
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="profile">
+                <div class="profile-avatar"><img src="{{ url_for('static', filename='images/WhatsApp Image 2026-05-22 at 7.16.37 PM.jpeg') }}" alt="Profile"></div>
+                <div class="profile-info">
+                    <h2> ATI Nawalapitiya</h2>
+                      <p>System Administrator</p>
+                </div>
+            </div>
+
+            <ul class="nav-menu">
+                <li><a href="/dashboard" class="active">📊 Dashboard</a></li>
+                <li><a href="/student_management">👥 Student Management</a></li>
+                <li><a href="/academic_management">📚 Academic Management</a></li>
+                <li><a href="/time_tabel">⏰ Time Table</a></li>
+                <li><a href="/mark_attendance">✅ Mark Attendance</a></li>
+                <li><a href="/attendance_report">📈 Attendance Report</a></li>
+            </ul>
+
+            <ul class="nav-menu logout">
+                <li><a href="/logout">🚪 Logout</a></li>
+            </ul>
+
+        </div>
+
+    <!-- Main Content -->
+        <div class="main-content">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <div class="header-date">
+                <h1>📋 Attendance Dashboard</h1>
+                <p id="currentDateDisplay">Loading date...</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>👩‍🎓 Total Students</h3>
+                    <div class="stat-number" id="totalStudentsCount">0</div>
+                </div>
+                <div class="stat-card present">
+                    <h3>✅ Present Today</h3>
+                    <div class="stat-number" id="presentTodayCount">0</div>
+                </div>
+                <div class="stat-card absent">
+                    <h3>❌ Absent Today</h3>
+                    <div class="stat-number" id="absentTodayCount">0</div>
+                </div>
+            </div>
+
+            <div class="trend-section">
+                <h2>📈 Attendance Trend (Last 7 Days)</h2>
+
+                <div class="chart-container">
+
+                    <canvas id="attendanceTrendChart"></canvas>
+                    
+                </div>
+                <div class="attendance-table-wrapper">
+                    <table>
+                        <thead>
+                            <tr><th>Date</th><th>Student Attendance (%)</th></tr>
+                        </thead>
+                        <tbody id="trendTableBody">
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>

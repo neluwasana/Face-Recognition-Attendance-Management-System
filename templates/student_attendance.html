@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Attendance - Face Attendance System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='student.css') }}">
+</head>
+<body>
+    <div class="dashboard-container">
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="profile">
+                <div class="profile-avatar">
+                    <img src="/student/profile-pic" alt="Profile">
+                </div>
+                <div class="profile-info">
+                    <h2>{{ student.full_name }}</h2>
+                    <p>Student</p>
+                </div>
+            </div>
+
+            <ul class="nav-menu">
+                <li><a href="/student/dashboard">📊 Dashboard</a></li>
+                <li><a href="/student/details">👥 View My Details</a></li>
+                <li><a href="/student/timetable">⏰ View Time Table</a></li>
+                <li><a href="/student/attendance" class="active">📈 View Attendance</a></li>
+            </ul>
+
+            <ul class="nav-menu logout">
+                <li><a href="/logout">🚪 Logout</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header-date">
+                <h1>My Attendance Report</h1>
+                <p class="subtitle">Subject-wise attendance summary for your current semester</p>
+            </div>
+
+            <!-- Subject-wise Attendance Summary -->
+            <div class="card-panel attendance-summary-card">
+                <h2 class="section-heading">Subject-wise Attendance Summary</h2>
+
+                <div class="attendance-table-wrapper">
+                    <table class="attendance-table">
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Total Lectures</th>
+                                <th>Present</th>
+                                <th>Attendance %</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if subject_stats %}
+                                {% for s in subject_stats %}
+                                    <tr>
+                                        <td class="td-subject">{{ s.subject_name }}</td>
+                                        <td>{{ s.total_conducted }}</td>
+                                        <td>{{ s.attended_count }}</td>
+                                        <td>{{ s.percentage }}%</td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="4" class="table-empty-msg">
+                                        No subjects found for this semester.
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Attendance History -->
+            <div class="card-panel">
+                <h2 class="section-heading">Attendance History</h2>
+
+                <div class="attendance-table-wrapper">
+                    <table class="attendance-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Lecture / Subject</th>
+                                <th>Lecturer</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if records %}
+                                {% for r in records %}
+                                    <tr>
+                                        <td>{{ r['date'] }}</td>
+                                        <td><span class="time-pill">{{ r['time'] }}</span></td>
+                                        <td class="td-subject">{{ r['lecture_name'] }}</td>
+                                        <td>{{ r['lecturer'] or 'N/A' }}</td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="4" class="table-empty-msg">
+                                        No attendance records found.
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div><!-- /main-content -->
+    </div><!-- /dashboard-container -->
+</body>
+</html>

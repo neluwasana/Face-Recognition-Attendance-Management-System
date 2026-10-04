@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academic Management - Face Attendance System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='academic_management.css') }}">
+</head>
+<body>
+<div class="dashboard-container">
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="profile">
+            <div class="profile-avatar">
+                <img src="{{ url_for('static', filename='images/WhatsApp Image 2026-05-22 at 7.16.37 PM.jpeg') }}" alt="Profile">
+            </div>
+            <div class="profile-info">
+                <h2>ATI Nawalapitiya</h2>
+                <p>System Administrator</p>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="/dashboard">📊 Dashboard</a></li>
+            <li><a href="/student_management">👥 Student Management</a></li>
+            <li><a href="/academic_management" class="active">📚 Academic Management</a></li>            
+            <li><a href="/time_tabel">⏰ Time Table</a></li>
+            <li><a href="/mark_attendance">✅ Mark Attendance</a></li>
+            <li><a href="/attendance_report">📈 Attendance Report</a></li>
+        </ul>
+        <ul class="nav-menu logout">
+            <li><a href="/logout">🚪 Logout</a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="page-header">
+            <div>
+                <h1>📚 Academic Management</h1>
+                <p class="subtitle">Configure Courses and Subjects for attendance tracking</p>
+            </div>
+        </div>
+
+        <!-- Tabs: Courses | Subjects -->
+        <div class="tabs-container">
+            <button class="tab-btn active" data-tab="courses-tab">🏫 Courses</button>
+            <button class="tab-btn" data-tab="subjects-tab">📖 Subjects</button>
+            <button class="tab-btn" data-tab="lecturers-tab">👨‍🏫 Lecturers</button>
+        </div>
+
+        <!-- COURSES TAB -->
+        <div id="courses-tab" class="tab-content active-content">
+            <div class="toolbar">
+                <div class="search-area">
+                    <div class="input-icon-group">
+                        <span class="input-icon">🔍</span>
+                        <input type="text" id="courseSearch" placeholder="Search courses by code or name...">
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <button id="addCourseBtn" class="btn btn-success">+ Add Course</button>
+                </div>
+            </div>
+            <div class="student-table-container card-panel">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="course-codeTH">Course Code</th>
+                            <th>Course Name</th>
+                            <th class="actionsTH">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="coursesTableBody">
+                        {% for c in courses %}
+                        <tr class="course-row" data-id="{{ c.id }}" data-code="{{ c.course_code }}" data-name="{{ c.course_name }}">
+                            <td><span class="badge-course">{{ c.course_code }}</span></td>
+                            <td>{{ c.course_name }}</td>
+                            <td>
+                                <div class="action-cell">
+                                    <button class="btn-action edit edit-course" title="Edit">✏️</button>
+                                    <button class="btn-action delete delete-course" title="Delete">🗑️</button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="3" class="text-center">No courses found. Add a course to begin!</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- SUBJECTS TAB -->
+        <div id="subjects-tab" class="tab-content">
+            <div class="toolbar">
+                <div class="search-area">
+                    <div class="input-icon-group">
+                        <span class="input-icon">🔍</span>
+                        <input type="text" id="subjectSearch" placeholder="Search subjects by code, name, or lecturer...">
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <button id="addSubjectBtn" class="btn btn-success">+ Add Subject</button>
+                </div>
+            </div>
+            <div class="student-table-container card-panel">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Associated Course</th>
+                            <th>Year</th>
+                            <th>Semester</th>
+                            <th>Subject Code</th>
+                            <th>Subject Name</th>
+                            <th>Assigned Lecturer</th>
+                            <th class="actionsTH">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="subjectsTableBody">
+                        {% for s in subjects %}
+                        <tr class="subject-row" data-id="{{ s.id }}" data-course-id="{{ s.course_id }}" data-year="{{ s.year }}" data-semester="{{ s.semester }}" data-code="{{ s.subject_code }}" data-name="{{ s.subject_name }}" data-lecturer-id="{{ s.lecturer_id }}">
+                            <td><span class="badge-course">{{ s.course_code }}</span></td>
+                            <td>{{ s.year or '-' }}</td>
+                            <td>{{ s.semester or '-' }}</td>
+                            <td><span class="badge-course">{{ s.subject_code }}</span></td>
+                            <td class="font-semibold">{{ s.subject_name }}</td>
+                            <td><span class="badge-lecturer">{{ s.lecturer_name }}</span></td>
+                            <td>
+                                <div class="action-cell">
+                                    <button class="btn-action edit edit-subject" title="Edit">✏️</button>
+                                    <button class="btn-action delete delete-subject" title="Delete">🗑️</button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="7" class="text-center">No subjects found. Add a subject to begin!</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- LECTURERS TAB -->
+        <div id="lecturers-tab" class="tab-content">
+            <div class="toolbar">
+                <div class="search-area">
+                    <div class="input-icon-group">
+                        <span class="input-icon">🔍</span>
+                        <input type="text" id="lecturerSearch" placeholder="Search by name, subject, or NIC...">
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <button id="addLecturerBtn" class="btn btn-success">+ Add Lecturer</button>
+                </div>
+            </div>
+            <div class="student-table-container card-panel">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Lecturer Name</th>
+                            <th>Subject</th>
+                            <th>Qualification</th>
+                            <th>NIC</th>
+                            <th>Tel No</th>
+                            <th>Email</th>
+                            <th>Username</th>
+                            <th class="actionsTH">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lecturersTableBody">
+                        {% for l in lecturers %}
+                        <tr class="lecturer-row" data-id="{{ l.id }}" data-name="{{ l.lecturer_name }}" data-subjects="{{ l.subjects or '' }}" data-qualification="{{ l.qualification or '' }}" data-nic="{{ l.nic or '' }}" data-tel="{{ l.tel_no or '' }}" data-email="{{ l.email or '' }}" data-dob="{{ l.dob or '' }}" data-username="{{ l.username or '' }}">
+                            <td class="font-semibold">{{ l.lecturer_name or '-' }}</td>
+                            <td>{{ l.subjects or '-' }}</td>
+                            <td>{{ l.qualification or '-' }}</td>
+                            <td>{{ l.nic or '-' }}</td>
+                            <td>{{ l.tel_no or '-' }}</td>
+                            <td class="text-muted">{{ l.email or '-' }}</td>
+                            <td>{{ l.username or '-' }}</td>
+                            <td>
+                                <div class="action-cell">
+                                    <button class="btn-action edit edit-lecturer" title="Edit Lecturer">✏️</button>
+                                    <button class="btn-action delete delete-lecturer" title="Delete Lecturer">🗑️</button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="8" class="text-center">No lecturers found. Click "+ Add Lecturer" to begin!</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- MODAL: Course Form -->
+<div id="courseModal" class="modal">
+    <div class="student-form-card">
+        <div class="student-form-title">
+            <h3 id="courseFormTitle">➕ Add New Course</h3>
+            <span class="crossBtn" id="courseCloseBtn">&times;</span>
+        </div>
+        <form id="courseForm">
+            <input type="hidden" id="course_id" name="id">
+            <div class="form-group">
+                <label for="course_code">Course Code *</label>
+                <input type="text" id="course_code" name="course_code" placeholder="e.g., HNDIT" required>
+            </div>
+            <div class="form-group">
+                <label for="course_name">Course Name *</label>
+                <input type="text" id="course_name" name="course_name" placeholder="e.g., Higher National Diploma in IT" required>
+            </div>
+            <div class="modal-footer-buttons">
+                <button type="button" id="courseCancelBtn" class="btn btn-light">Cancel</button>
+                <button type="submit" class="btn btn-success">Save Course</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL: Subject Form -->
+<div id="subjectModal" class="modal">
+    <div class="student-form-card">
+        <div class="student-form-title">
+            <h3 id="subjectFormTitle">➕ Add New Subject</h3>
+            <span class="crossBtn" id="subjectCloseBtn">&times;</span>
+        </div>
+        <form id="subjectForm">
+            <input type="hidden" id="subject_id" name="id">
+
+            <div class="form-group">
+                <label for="subject_course">Course Association *</label>
+                <select id="subject_course" name="course_id" required>
+                    <option value="">-- Select Course --</option>
+                    {% for c in courses %}
+                    <option value="{{ c.id }}">{{ c.course_code }} - {{ c.course_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="subject_year">Year *</label>
+                <select id="subject_year" name="year" required>
+                    <option value="">-- Select Year --</option>
+                    <option value="1st Year">1st Year</option>
+                    <option value="2nd Year">2nd Year</option>
+                    <option value="3rd Year">3rd Year</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="subject_semester">Semester *</label>
+                <select id="subject_semester" name="semester" required>
+                    <option value="">-- Select Semester --</option>
+                    <option value="I Semester">I Semester</option>
+                    <option value="II Semester">II Semester</option>
+                    <option value="III Semester">III Semester</option>
+                    <option value="IV Semester">IV Semester</option>
+                    <option value="V Semester">V Semester</option>
+                    <option value="VI Semester">VI Semester</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="subject_code">Subject Code *</label>
+                <input type="text" id="subject_code" name="subject_code" placeholder="e.g., IT101" required>
+            </div>
+
+            <div class="form-group">
+                <label for="subject_name">Subject Name *</label>
+                <input type="text" id="subject_name" name="subject_name" placeholder="e.g., Data Structures" required>
+            </div>
+
+            <div class="form-group">
+                <label for="subject_lecturer">Assigned Lecturer *</label>
+                <select id="subject_lecturer" name="lecturer_id" required>
+                    <option value="">-- Select Lecturer --</option>
+                    {% for l in lecturers %}
+                    <option value="{{ l.id }}">{{ l.lecturer_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="modal-footer-buttons">
+                <button type="button" id="subjectCancelBtn" class="btn btn-light">Cancel</button>
+                <button type="submit" class="btn btn-success">Save Subject</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL: Lecturer Form -->
+<div id="lecturerModal" class="modal">
+    <div class="student-form-card">
+        <div class="student-form-title">
+            <h3 id="lecturerFormTitle">➕ Add New Lecturer</h3>
+            <span class="crossBtn" id="lecturerCloseBtn">&times;</span>
+        </div>
+
+        <form id="lecturerForm">
+            <input type="hidden" id="lecturer_id" name="id">
+
+            <!-- 1. Lecturer Name -->
+            <div class="form-group">
+                <label for="lecturer_name">Lecturer Name *</label>
+                <input type="text" id="lecturer_name" name="lecturer_name" placeholder="e.g., Mr. Amal Perera" required>
+            </div>
+
+            <!-- 2. Subject -->
+            <div class="form-group">
+                <label for="lecturer_subject">Subject</label>
+                <input type="text" id="lecturer_subject" name="subjects" placeholder="e.g., Data Structures">
+            </div>
+
+            <!-- 3. Qualification (textarea) -->
+            <div class="form-group">
+                <label for="lecturer_qualification">Qualification</label>
+                <textarea id="lecturer_qualification" name="qualification" placeholder="e.g., BSc in Computer Science, MSc in IT" rows="3"></textarea>
+            </div>
+
+            <!-- 4. NIC -->
+            <div class="form-group">
+                <label for="lecturer_nic">NIC (National Identity Card) *</label>
+                <input type="text" id="lecturer_nic" name="nic" placeholder="e.g., 199012345678" required>
+            </div>
+
+            <!-- 5. Telephone Number -->
+            <div class="form-group">
+                <label for="lecturer_tel">Telephone Number</label>
+                <input type="tel" id="lecturer_tel" name="tel_no" placeholder="e.g., 0771234567">
+            </div>
+
+            <!-- 6. Email -->
+            <div class="form-group">
+                <label for="lecturer_email">Email Address</label>
+                <input type="email" id="lecturer_email" name="email" placeholder="e.g., amal@example.com">
+            </div>
+
+            <!-- 7. Date of Birth -->
+            <div class="form-group">
+                <label for="lecturer_dob">Date of Birth</label>
+                <input type="date" id="lecturer_dob" name="dob">
+            </div>
+
+            <!-- 8. Username -->
+            <div class="form-group">
+                <label for="lecturer_username">Username *</label>
+                <input type="text" id="lecturer_username" name="username" placeholder="e.g., amal_perera" required>
+            </div>
+
+            <!-- 9. Password with eye toggle -->
+            <div class="form-group">
+                <label for="lecturer_password">Password <span id="lecturer_pwd_asterisk">*</span></label>
+                <div class="password-wrapper">
+                    <input type="password" id="lecturer_password" name="password" placeholder="Enter password">
+                    <button type="button" class="toggle-password-btn slashed" id="toggleLecturerPasswordBtn" tabindex="-1">👁</button>
+                </div>
+            </div>
+
+            <div class="modal-footer-buttons">
+                <button type="button" id="lecturerCancelBtn" class="btn btn-light">Cancel</button>
+                <button type="submit" id="lecturerSaveBtn" class="btn btn-success">Save Lecturer</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/academic_management.js') }}"></script>
+</body>
+</html>

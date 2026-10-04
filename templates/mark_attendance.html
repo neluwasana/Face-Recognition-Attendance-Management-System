@@ -1,0 +1,208 @@
+<!-- templates/mark_attendance.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mark Attendance - Face Attendance System</title>
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='mark_attendance.css') }}">
+
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="profile">
+                <div class="profile-avatar"><img
+                        src="{{ url_for('static', filename='images/WhatsApp Image 2026-05-22 at 7.16.37 PM.jpeg') }}"
+                        alt="Profile"></div>
+                <div class="profile-info">
+                    <h2> ATI Nawalapitiya</h2>
+                    <p>System Administrator</p>
+                </div>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/dashboard">📊 Dashboard</a></li>
+                <li><a href="/student_management">👥 Student Management</a></li>
+                <li><a href="/academic_management">📚 Academic Management</a></li>
+                 <li><a href="/time_tabel">⏰ Time Table</a></li>
+                <li><a href="/mark_attendance" class="active">✅ Mark Attendance</a></li>
+                <li><a href="/attendance_report">📈 Attendance Report</a></li>
+            </ul>
+            <ul class="nav-menu logout">
+                <li><a href="/logout">🚪 Logout</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="flash {{ category }}">{{ message }}</div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+
+            <div class="page-header header-date">
+                <div>
+                    <h1>Mark Student Attendance</h1>
+                    <p class="subtitle">Position your face in front of the camera to log attendance</p>
+                </div>
+                <div class="date-badge">
+                    📅 <span id="currentDateDisplay">Loading...</span>
+                </div>
+            </div>
+
+            <div class="attendance-panel card-panel">
+                <div class="session-header">
+                    <h2>Session Details</h2>
+                    <span id="sessionStatusBadge" class="session-status-badge">Session Inactive</span>
+                </div>
+                <div class="form-row select-row">
+                    <div class="select-group">
+                        <label for="courseSelect" class="form-label">Select Course *</label>
+                        <select id="courseSelect" class="form-select">
+                            <option value="">-- Choose Course --</option>
+                        </select>
+                    </div>
+                    <div class="select-group">
+                        <label for="yearSelect" class="form-label">Select Year *</label>
+                        <select id="yearSelect" class="form-select" disabled>
+                            <option value="">-- Choose Year --</option>
+                            <option value="1st Year">1st Year</option>
+                            <option value="2nd Year">2nd Year</option>
+                            <option value="3rd Year">3rd Year</option>
+                        </select>
+                    </div>
+                    <div class="select-group">
+                        <label for="semesterSelect" class="form-label">Select Semester *</label>
+                        <select id="semesterSelect" class="form-select" disabled>
+                            <option value="">-- Choose Semester --</option>
+                            <option value="I Semester">I Semester</option>
+                            <option value="II Semester">II Semester</option>
+                            <option value="III Semester">III Semester</option>
+                            <option value="IV Semester">IV Semester</option>
+                            <option value="V Semester">V Semester</option>
+                            <option value="VI Semester">VI Semester</option>
+                        </select>
+                    </div>
+                    <div class="select-group">
+                        <label for="studyModeSelect" class="form-label">Study Mode *</label>
+                        <select id="studyModeSelect" class="form-select" disabled>
+                            <option value="">-- Choose Mode --</option>
+                            <option value="Full Time">Full Time</option>
+                            <option value="Part Time">Part Time</option>
+                        </select>
+                    </div>
+                    <div class="select-group">
+                        <label for="subjectSelect" class="form-label">Select Subject *</label>
+                        <select id="subjectSelect" class="form-select" disabled>
+                            <option value="">-- Choose Subject --</option>
+                        </select>
+                    </div>
+                    <div class="select-group">
+                        <label for="lecturerSelect" class="form-label">Assigned Lecturer</label>
+                        <select id="lecturerSelect" class="form-select" disabled>
+                            <option value="">-- Choose Lecturer --</option>
+                        </select>
+                    </div>
+                    <div class="select-group">
+                        <label for="sessionDisplay" class="form-label">Active Session Today</label>
+                        <input type="text" id="sessionDisplay" class="form-select session-display-input" placeholder="-- No Session Scheduled --" readonly>
+                    </div>
+                </div>
+                <!-- Hidden inputs for backward compatibility with the existing Javascript code if needed -->
+                <input type="hidden" id="lectureName">
+                <input type="hidden" id="lecturerName">
+            </div>
+
+            <!-- Two Column Layout for Scanner & Manual Marking -->
+            <div class="attendance-two-column">
+                <!-- Left Column: Manual Marking & Log -->
+                <div class="attendance-left-column">
+                    <!-- Manual Attendance Marking Panel -->
+                    <div class="attendance-panel card-panel">
+                        <h2>Manual Attendance</h2>
+                        <div id="manualAttendanceContainer">
+                            <div class="empty-placeholder">
+                                Select session details to load student index numbers.
+                            </div>
+                        </div>
+                        <div id="manualAttendanceFooter" class="manual-attendance-footer" style="display: none;">
+                            <span class="footer-label">Total Marked Students:</span>
+                            <span id="totalMarkedCount" class="footer-count">0</span>
+                        </div>
+                    </div>
+
+                    <!-- Recognition Log Panel -->
+                    <div class="attendance-panel card-panel">
+                        <h2>Recognition Log</h2>
+                        <div id="resultBox" class="result-box"></div>
+                        <div class="live-log" id="liveLog">
+                            <div class="log-placeholder">
+                                Waiting for recognition activity...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Live Camera Feed -->
+                <div class="attendance-right-column">
+                    <!-- Live Time Panel -->
+                    <div class="attendance-panel card-panel live-time-panel">
+                        <h2>Live Time</h2>
+                        <div id="liveTime" class="live-time-display">Loading...</div>
+                    </div>
+
+                    <div class="attendance-panel card-panel">
+                        <h2>Live Camera Feed</h2>
+                        <div class="camera-box">
+                            <div class="camera-stream-container">
+                                <!-- Live video element -->
+                                <video id="liveVideo" autoplay playsinline></video>
+
+                                <!-- Standby View when camera is off -->
+                                <div class="camera-standby" id="cameraStandby">
+                                    <div class="standby-icon">👁️</div>
+                                    <h3>Scanner Standby</h3>
+                                    <p>Select session details above and click "Start Scanner" to begin facial recognition.</p>
+                                </div>
+
+                                <!-- High tech brackets and scan line overlay -->
+                                <div class="scanner-overlay" id="scannerOverlay">
+                                    <div class="scanner-bracket sc-top-left"></div>
+                                    <div class="scanner-bracket sc-top-right"></div>
+                                    <div class="scanner-bracket sc-bottom-left"></div>
+                                    <div class="scanner-bracket sc-bottom-right"></div>
+                                    <div class="scanner-scanline"></div>
+                                </div>
+                            </div>
+
+                            <!-- Camera Control Buttons — unified single scanner -->
+                            <div class="camera-controls">
+                                <button id="startCameraBtn" class="btn btn-success">🎯 Start Attendance</button>
+                                <button id="stopCameraBtn" class="btn btn-danger btn-hidden">🛑 Stop Scanner</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   
+
+    <!-- jsQR: local copy (offline-safe QR decoder) -->
+    <script src="{{ url_for('static', filename='js/jsQR.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/mark_attendance.js') }}"></script>
+</body>
+
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timetable - Lecturer Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='timetabel.css') }}?v=1.0.4">
+    <link rel="stylesheet" href="{{ url_for('static', filename='lecturer.css') }}">
+</head>
+<body>
+    <div class="dashboard-container">
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="profile">
+                <div class="profile-avatar initials-avatar">
+                    {{ lecturer.initials }}
+                </div>
+                <div class="profile-info">
+                    <h2>{{ lecturer.lecturer_name }}</h2>
+                    <p>Lecturer</p>
+                </div>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/lecturer/dashboard" class="nav-link">📊 Lecturer Dashboard</a></li>
+                <li><a href="/lecturer/timetable" class="nav-link active">⏰ Time Table</a></li>
+                <li><a href="/lecturer/mark_attendance" class="nav-link">✅ Mark Attendance</a></li>
+                <li><a href="/lecturer/reports" class="nav-link">📈 Reports</a></li>
+            </ul>
+            <ul class="nav-menu logout">
+                <li><a href="/logout">🚪 Logout</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <div class="page-header">
+                <div>
+                    <h1>⏰ Lecture Schedule</h1>
+                    <p class="subtitle">Your lectures for the selected date: {{ today }}</p>
+                </div>
+            </div>
+
+            <!-- Date Filter Toolbar -->
+            <div class="toolbar">
+                <div class="search-area">
+                    <div class="lecturer-date-filter-group">
+                        <label for="filterDate">Select Date:</label>
+                        <input type="date" id="filterDate" value="{{ selected_date }}">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timetable Table -->
+            <div class="card-panel timetable-table-container">
+                <table id="timetableTable">
+                    <thead>
+                        <tr>
+                            <th>Course</th>
+                            <th>Year</th>
+                            <th>Semester</th>
+                            <th>Study Mode</th>
+                            <th>Subject</th>
+                            <th>Lecturer</th>
+                            <th>Location</th>
+                            <th>Day / Date</th>
+                            <th>Time Slot</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for t in timetable_entries %}
+                            <tr class="data-row {% if t.status == 'Cancelled' %}cancelled-row{% endif %}"
+                                data-id="{{ t['id'] }}"
+                                data-course="{{ t['course'] }}">
+                                <td class="col-course">{{ t['course'] }}</td>
+                                <td>{{ t['year'] }}</td>
+                                <td>{{ t['semester'] }}</td>
+                                <td>
+                                    <span class="badge {% if t.get('part_time_full_time') == 'Full Time' %}badge-dept{% else %}badge-mode-pt{% endif %}">
+                                        {{ t.get('part_time_full_time') or 'Full Time' }}
+                                    </span>
+                                </td>
+                                <td class="col-subject">{{ t['subject_name'] }}</td>
+                                <td>{{ t['lecturer_name'] }}</td>
+                                <td><span class="location-badge">{{ t['location'] }}</span></td>
+                                <td>
+                                    {% if t.get('day') %}
+                                        {{ t['day'] }}
+                                    {% else %}
+                                        {{ t['lecture_date'] }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if t.get('time_slot') %}
+                                        <span class="time-badge">{{ t['time_slot'] }}</span>
+                                    {% elif t.get('start_time') and t.get('end_time') %}
+                                        <span class="time-badge">{{ t['start_time'] }} - {{ t['end_time'] }}</span>
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if t.status == 'Cancelled' %}
+                                        <span class="status-badge status-cancelled">Cancelled</span>
+                                        {% if t.get('cancel_reason') %}
+                                            <div class="cancel-reason-text">Reason: {{ t['cancel_reason'] }}</div>
+                                        {% endif %}
+                                    {% elif t.status == 'Completed' %}
+                                        <span class="status-badge status-completed">Completed</span>
+                                    {% else %}
+                                        <span class="status-badge status-upcoming">Upcoming</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="10" class="text-center" style="padding: 40px; color: var(--color-text-muted); font-style: italic; font-size: 15px;">No scheduled lectures found for this date.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+        </div><!-- /main-content -->
+    </div><!-- /dashboard-container -->
+
+    <!-- Filter logic is in lecturer.js -->
+    <script src="{{ url_for('static', filename='js/lecturer.js') }}"></script>
+</body>
+</html>

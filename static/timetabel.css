@@ -1,0 +1,564 @@
+
+.timetable-table-container{
+    overflow: auto;
+    padding:0;
+    display:flex;
+    flex-direction:column;
+    width: 100%;
+    scrollbar-width: thin; /* Firefox support */
+    scrollbar-color: #b7c4d6 #e5e7eb; /* Firefox support */
+}
+
+#timetableTable{
+    width:100%;
+    border-collapse:collapse;
+    font-family:var(--font-secondary);
+    font-size:14px;
+    
+}
+
+#timetableTable th,
+#timetableTable td{
+    white-space: nowrap;
+    padding:15px;
+    border-bottom:1px solid var(--color-border);
+    text-align:left;
+}
+
+#timetableTable th{
+    background:#f8fafc;
+    color:var(--color-text-muted);
+    font-size:13px;
+    text-transform:uppercase;
+    font-weight:700;
+}
+
+#timetableTable tbody tr{
+    transition: var(--transition-fast);
+    cursor: pointer;
+}
+
+#timetableTable tbody tr:hover{
+    background:#f8fafc;
+}
+
+#timetableTable tr.active {
+    background-color: rgba(79, 70, 229, 0.05);
+}
+
+/* Select Checkbox */
+#timetableTable input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    border: 1px solid var(--color-border);
+    cursor: pointer;
+}
+
+
+
+.location-badge{
+    background:#e0f2fe;
+    color:#0369a1;
+    padding:6px 12px;
+    border-radius:8px;
+    font-size:12px;
+    font-weight:700;
+}
+
+.time-badge{
+    background:#ecfeff;
+    color:#0891b2;
+    padding:6px 12px;
+    border-radius:8px;
+    font-size:12px;
+    font-weight:700;
+}
+
+.window-badge{
+    background:#fef3c7;
+    color:#b45309;
+    padding:6px 12px;
+    border-radius:8px;
+    font-size:12px;
+    font-weight:700;
+}
+
+
+/* modal actions buttons */
+
+.modal{
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.5);
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+}
+
+/* ===== CANCEL LECTURE STYLES ===== */
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-active {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.status-cancelled {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.data-row.cancelled-row td {
+    opacity: 0.50;
+    text-decoration: line-through;
+    text-decoration-color: #dc2626;
+}
+
+
+
+.btn-cancel-lecture {
+    background: #f97316;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-cancel-lecture:hover {
+    background: #ea580c;
+    transform: translateY(-2px);
+}
+
+/* Notification dot on toolbar */
+.notif-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: #ef4444;
+    border-radius: 50%;
+    margin-left: 5px;
+    vertical-align: middle;
+    animation: pulse-dot 1.5s infinite;
+}
+
+@keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.3); }
+}
+
+.modal-card{
+    background:#fff;
+    width:530px;
+    max-width:95%;
+    padding:25px ;
+    max-height: 95%;
+    border-radius:12px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.2);
+    overflow: auto;
+    margin: auto;
+}
+
+.modal-actions{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.timetabel-form-title {
+   
+    padding: 10px;
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.timetabel-form-title h3 {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--color-text-main);
+    letter-spacing: -0.5px;
+}
+
+.crossBtn {
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    color: var(--color-text-muted);
+    transition: var(--transition-fast);
+}
+.crossBtn:hover {
+    color: var(--color-danger);
+}
+
+
+
+
+
+.btn-save{
+    background: #06b6d4;
+    color: white;
+    padding: 10px 14px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-save:hover{
+    background: #0891b2;
+    transform: translateY(-2px);
+}
+
+.btn-close{
+    background: #f43f5e;
+    color: white;
+    padding: 10px 14px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-close:hover{
+    background: #e11d48;
+    transform: translateY(-2px);
+}
+
+/* ===== CANCEL REASON CUSTOM STYLES ===== */
+.cancel-reason-text {
+    font-size: 11px;
+    color: #dc2626;
+    margin-top: 4px;
+    max-width: 150px;
+    white-space: normal;
+    line-height: 1.2;
+}
+
+.cancel-reason-group {
+    margin-top: 15px;
+}
+
+.cancel-reason-group label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--color-text-main);
+    display: block;
+    margin-bottom: 5px;
+}
+
+.cancel-reason-group input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.timetable-table-container::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.timetable-table-container::-webkit-scrollbar-track {
+    background: #e5e7eb;
+    border-radius: 10px;
+}
+
+.timetable-table-container::-webkit-scrollbar-thumb {
+    background: #b7c4d6;
+    border-radius: 10px;
+}
+
+.timetable-table-container::-webkit-scrollbar-thumb:hover {
+    background: #879ab6;
+}
+
+.modal-card::-webkit-scrollbar {
+   width:3px ;
+ 
+    
+}
+
+
+
+/* ===== TOOLBAR AND FILTER STYLES FOR VIEW TIMETABLE ===== */
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    background-color: var(--bg-card, #ffffff);
+    padding: 20px 24px;
+    border-radius: var(--border-radius-md, 8px);
+    box-shadow: var(--shadow-sm, 0 1px 3px rgba(0,0,0,0.1));
+    border: 1px solid var(--color-border, #e2e8f0);
+    flex-wrap: wrap;
+    margin-bottom: 25px;
+}
+
+.search-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-grow: 1;
+    max-width: 600px;
+    width: 100%;
+}
+
+.input-icon-group {
+    position: relative;
+    width: 100%;
+    flex: 1;
+}
+
+.input-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-text-muted, #64748b);
+    font-size: 16px;
+}
+
+.search-area input {
+    width: 100%;
+    height: 46px;
+    padding: 10px 14px 10px 42px;
+    border-radius: var(--border-radius-md, 8px);
+    border: 1px solid var(--color-border, #e2e8f0);
+    font-family: var(--font-primary, inherit);
+    font-size: 14px;
+    background-color: var(--bg-main, #f8fafc);
+    outline: none;
+    transition: var(--transition-fast, 0.2s);
+    box-sizing: border-box;
+}
+
+.search-area input:focus {
+    border-color: var(--color-primary, #4f46e5);
+    background-color: #ffffff;
+    box-shadow: 0 0 0 4px var(--color-primary-glow, rgba(79, 70, 229, 0.15));
+}
+
+.course-filter-select {
+    width: 100%;
+    height: 46px;
+    padding: 10px 30px 10px 42px;
+    border-radius: var(--border-radius-md, 8px);
+    border: 1px solid var(--color-border, #e2e8f0);
+    font-family: var(--font-primary, inherit);
+    font-size: 14px;
+    background-color: var(--bg-main, #f8fafc);
+    cursor: pointer;
+    color: var(--color-text-main, #0f172a);
+    box-sizing: border-box;
+}
+
+.course-filter-select:focus {
+    border-color: var(--color-primary, #4f46e5);
+    background-color: #ffffff;
+    box-shadow: 0 0 0 4px var(--color-primary-glow, rgba(79, 70, 229, 0.15));
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+    .toolbar {
+        padding: 15px;
+    }
+    .search-area {
+        flex-direction: column;
+        align-items: stretch;
+        max-width: 100%;
+    }
+    .input-icon-group {
+        width: 100%;
+    }
+    #refreshBtn {
+        width: 100%;
+    }
+}
+
+/* Fix for Add Lecture Form inputs alignment and overflow */
+#timetableModal .form-group input,
+#timetableModal .form-group select {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+#timetableModal .form-group-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 16px;
+}
+
+/* ===== ADMIN FILTER FORM (time_tabel.html) ===== */
+.admin-filter-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    width: 100%;
+    align-items: flex-end;
+}
+
+.filter-input-group {
+    flex: 1;
+    min-width: 150px;
+}
+
+.filter-input-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 4px;
+    color: var(--color-text-muted);
+}
+
+.filter-input-group select,
+.filter-input-group input[type="date"] {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    font-family: inherit;
+    font-size: 14px;
+    box-sizing: border-box;
+    background-color: var(--bg-main);
+}
+
+.filter-action-buttons {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 2px;
+    align-items: flex-end;
+}
+
+.filter-action-buttons .btn {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    text-decoration: none;
+    line-height: 40px;
+    padding: 0 15px;
+    font-size: 14px;
+}
+
+.toolbar-action-row {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.toolbar-column {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: stretch;
+    height: auto;
+}
+
+.table-empty-msg {
+    text-align: center;
+    padding: 40px;
+    color: var(--color-text-muted);
+    font-style: italic;
+    font-size: 15px;
+}
+
+/* ===== STUDENT TIMETABLE FILTER ROW ===== */
+.timetable-filter-row {
+    display: flex;
+    justify-content: flex-start;
+    gap: 15px;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.timetable-filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.timetable-filter-group label {
+    font-weight: 600;
+    margin-bottom: 5px;
+    font-size: 13px;
+    color: var(--color-text-main);
+}
+
+.timetable-filter-group input[type="date"] {
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    font-family: inherit;
+    font-size: 14px;
+}
+
+/* ===== LECTURER TIMETABLE DATE FILTER ===== */
+.lecturer-date-filter-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.lecturer-date-filter-group label {
+    font-size: 14px;
+    font-weight: 500;
+    margin-right: 5px;
+    white-space: nowrap;
+}
+
+.lecturer-date-filter-group input[type="date"] {
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    font-family: inherit;
+    font-size: 14px;
+}
+
+/* ===== CANCEL MODAL INNER CONTENT ===== */
+.cancel-modal-content {
+    padding: 15px;
+}
+
+/* ===== WEEK INFO BOX ===== */
+#weekInfoBox {
+    display: none;
+    background: rgba(79, 70, 229, 0.07);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    margin-bottom: 16px;
+}
+
+/* Form inputs column for timetable modal */
+.timetable-form-inputs-column {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+}

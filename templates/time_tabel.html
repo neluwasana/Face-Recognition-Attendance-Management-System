@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Table Management - Face Attendance System</title>
+  
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='timetabel.css') }}?v=1.0.3">
+    <link rel="stylesheet" href="{{ url_for('static', filename='student_management.css') }}">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="profile">
+                <div class="profile-avatar"><img src="{{ url_for('static', filename='images/WhatsApp Image 2026-05-22 at 7.16.37 PM.jpeg') }}" alt="Profile"></div>
+                <div class="profile-info">
+                    <h2> ATI Nawalapitiya</h2>
+                    <p>System Administrator</p>
+                </div>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/dashboard">📊 Dashboard</a></li>
+                <li><a href="/student_management">👥 Student Management</a></li>
+                <li><a href="/academic_management">📚 Academic Management</a></li>
+                 <li><a href="/time_tabel" class="active">⏰ Time Table</a></li>
+                <li><a href="/mark_attendance">✅ Mark Attendance</a></li>
+                <li><a href="/attendance_report">📈 Attendance Report</a></li>
+            </ul>
+            <ul class="nav-menu logout">
+                <li><a href="/logout">🚪 Logout</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+           <div class="page-header">
+    <div>
+        <h1>⏰ Time Table Management</h1>
+        <p class="subtitle">Manage lecture schedules and attendance windows</p>
+    </div>
+
+    
+       <button class="btn btn-success" id="openTimetableForm">
+            + Add Lecture
+         </button>
+     </div>
+
+    <div class="toolbar toolbar-column">
+        <form method="GET" action="/time_tabel" id="adminFilterForm" class="admin-filter-form">
+            <div class="filter-input-group">
+                <label for="adminCourseFilter">Course / Department *</label>
+                <select id="adminCourseFilter" name="course" required>
+                    <option value="">Select Course</option>
+                    <option value="HNDBF" {% if selected_course == 'HNDBF' %}selected{% endif %}>HNDBF</option>
+                    <option value="HNDE" {% if selected_course == 'HNDE' %}selected{% endif %}>HNDE</option>
+                    <option value="HNDIT" {% if selected_course == 'HNDIT' %}selected{% endif %}>HNDIT</option>
+                    <option value="HNDM" {% if selected_course == 'HNDM' %}selected{% endif %}>HNDM</option>
+                    <option value="HNDTHM" {% if selected_course == 'HNDTHM' %}selected{% endif %}>HNDTHM</option>
+                </select>
+            </div>
+            
+            <div class="filter-input-group">
+                <label for="adminYearFilter">Year *</label>
+                <select id="adminYearFilter" name="year" required>
+                    <option value="">Select Year</option>
+                    <option value="1st Year" {% if selected_year == '1st Year' %}selected{% endif %}>1st Year</option>
+                    <option value="2nd Year" {% if selected_year == '2nd Year' %}selected{% endif %}>2nd Year</option>
+                    <option value="3rd Year" {% if selected_year == '3rd Year' %}selected{% endif %}>3rd Year</option>
+                    <option value="4th Year" {% if selected_year == '4th Year' %}selected{% endif %}>4th Year</option>
+                </select>
+            </div>
+
+            <div class="filter-input-group">
+                <label for="adminSemFilter">Semester *</label>
+                <select id="adminSemFilter" name="semester" required>
+                    <option value="">Select Semester</option>
+                    <option value="I Semester" {% if selected_semester == 'I Semester' %}selected{% endif %}>I Semester</option>
+                    <option value="II Semester" {% if selected_semester == 'II Semester' %}selected{% endif %}>II Semester</option>
+                    <option value="III Semester" {% if selected_semester == 'III Semester' %}selected{% endif %}>III Semester</option>
+                    <option value="IV Semester" {% if selected_semester == 'IV Semester' %}selected{% endif %}>IV Semester</option>
+                    <option value="V Semester" {% if selected_semester == 'V Semester' %}selected{% endif %}>V Semester</option>
+                    <option value="VI Semester" {% if selected_semester == 'VI Semester' %}selected{% endif %}>VI Semester</option>
+                    <option value="VII Semester" {% if selected_semester == 'VII Semester' %}selected{% endif %}>VII Semester</option>
+                    <option value="VIII Semester" {% if selected_semester == 'VIII Semester' %}selected{% endif %}>VIII Semester</option>
+                </select>
+            </div>
+
+            <div class="filter-input-group">
+                <label for="adminStudyModeFilter">Study Mode</label>
+                <select id="adminStudyModeFilter" name="study_mode">
+                    <option value="">All Modes</option>
+                    <option value="Full Time" {% if selected_study_mode == 'Full Time' %}selected{% endif %}>Full Time</option>
+                    <option value="Part Time" {% if selected_study_mode == 'Part Time' %}selected{% endif %}>Part Time</option>
+                </select>
+            </div>
+
+            <div class="filter-input-group">
+                <label for="adminDateFilter">Date *</label>
+                <input type="date" id="adminDateFilter" name="date" value="{{ selected_date }}" required>
+            </div>
+
+            <div class="filter-action-buttons">
+                <button type="submit" class="btn btn-primary">🔍 View</button>
+                <a href="/time_tabel" class="btn btn-secondary">⟳ Clear</a>
+            </div>
+        </form>
+        
+        <div class="action-buttons toolbar-action-row">
+            <button id="editSelectedBtn" class="btn btn-warning" {% if not (selected_course and selected_year and selected_semester) %}disabled title="Select Course, Year and Semester first!" style="opacity: 0.6; cursor: not-allowed;"{% endif %}>✏️ Edit</button>
+            <button id="cancelLectureBtn" class="btn-cancel-lecture" {% if not (selected_course and selected_year and selected_semester) %}disabled title="Select Course, Year and Semester first!" style="opacity: 0.6; cursor: not-allowed;"{% endif %}>🚫 Cancel Lecture</button>
+            <button id="deleteSelectedBtn" class="btn btn-danger" {% if not (selected_course and selected_year and selected_semester) %}disabled title="Select Course, Year and Semester first!" style="opacity: 0.6; cursor: not-allowed;"{% endif %}>🗑️ Delete</button>
+        </div>
+     </div>
+
+   
+    <div class="card-panel timetable-table-container">
+         <table id="timetableTable">
+            <thead>
+              <tr>
+                <th class="selectTH"><input type="checkbox" id="selectAllCheck"></th>
+                <th>Course</th>
+                <th>Year</th>
+                <th>Semester</th>
+                <th>Study Mode</th>
+                <th>Subject</th>
+                <th>Lecturer</th>
+                <th>Location</th>
+                <th>Day / Date</th>
+                <th>Time Slot</th>
+                <th>Attendance Mark Time</th>
+              </tr>
+            </thead>
+          <tbody>
+            {% if not selected_course or not selected_year or not selected_semester %}
+              <tr>
+                <td colspan="11" class="table-empty-msg">
+                    Please select Course, Year, and Semester to view the timetable.
+                </td>
+              </tr>
+            {% else %}
+                {% for t in timetable_entries %}
+                  <tr class="data-row {% if t.get('is_cancelled') %}cancelled-row{% endif %}" data-id="{{ t['id'] }}" data-cancelled="{{ 'true' if t.get('is_cancelled') else 'false' }}" data-start="{{ t['start_time'] }}" data-end="{{ t['end_time'] }}">
+                    <td><input type="checkbox" class="timetabel-select-check" value="{{ t['id'] }}"></td>
+                    <td class="col-course">{{ t['course'] }}</td>
+                    <td>{{ t['year'] }}</td>
+                    <td>{{ t['semester'] }}</td>
+                    <td><span class="badge {% if t.get('part_time_full_time') == 'Full Time' %}badge-dept{% else %}badge-mode-pt{% endif %}">{{ t.get('part_time_full_time') or 'Full Time' }}</span></td>
+                    <td class="col-subject">{{ t['subject_name'] }}</td>
+                    <td>{{ t['lecturer_name'] }}</td>
+                    <td><span class="location-badge">{{ t['location'] }}</span></td>
+                    <td>{% if t.get('day') %}{{ t['day'] }}{% else %}{{ t['lecture_date'] }}{% endif %}</td>
+                    <td>{% if t.get('time_slot') %}<span class="time-badge">{{ t['time_slot'] }}</span>{% else %}-{% endif %}</td>
+                    <td><span class="window-badge">{{ t['attendance_mark_time'] }} mins</span></td>
+                  </tr>
+                {% else %}
+                  <tr>
+                    <td colspan="11" class="table-empty-msg">
+                        No scheduled lectures found for this date.
+                    </td>
+                  </tr>
+                {% endfor %}
+            {% endif %}
+          </tbody>
+        </table>
+    </div>
+
+
+    </div>
+
+
+
+   <div id="timetableModal" class="modal">
+    <div class="modal-card">
+
+        <div class="timetabel-form-title">
+                <h3 id="formTitle">➕ Add Lecture</h3>
+                <span class="crossBtn" id="closeBtn">&times;</span>
+            </div>
+
+   <form id="timetableForm" action="/add_timetable" method="POST">
+    <div class="timetable-form-inputs-column">
+        
+        <!-- Row 1: Course & Year -->
+        <div class="form-group-row">
+            <div class="form-group">
+                <label for="department">Department / Course *</label>
+                <select id="department" name="course" required>
+                    <option value="">Select Course</option>
+                    <option value="HNDBF">HNDBF</option>
+                    <option value="HNDE">HNDE</option>
+                    <option value="HNDIT">HNDIT</option>
+                    <option value="HNDM">HNDM</option>
+                    <option value="HNDTHM">HNDTHM</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="year">Year*</label>
+                <select id="year" name="year" required>
+                    <option value="">Select Year</option>
+                    <option value="1st Year">1st Year</option>
+                    <option value="2nd Year">2nd Year</option>
+                    <option value="3rd Year">3rd Year</option>
+                    <option value="4th Year">4th Year</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Row 2: Semester & Mode -->
+        <div class="form-group-row">
+            <div class="form-group">
+                <label for="semester">Semester*</label>
+                <select id="semester" name="semester" required>
+                    <option value="">Select Semester</option>
+                    <option value="I Semester">I Semester</option>
+                    <option value="II Semester">II Semester</option>
+                    <option value="III Semester">III Semester</option>
+                    <option value="IV Semester">IV Semester</option>
+                    <option value="V Semester">V Semester</option>
+                    <option value="VI Semester">VI Semester</option>
+                    <option value="VII Semester">VII Semester</option>
+                    <option value="VIII Semester">VIII Semester</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="part_time_full_time">Part Time / Full Time *</label>
+                <select id="part_time_full_time" name="part_time_full_time" required>
+                    <option value="">Select Study Mode</option>
+                    <option value="Full Time">Full Time</option>
+                    <option value="Part Time">Part Time</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Row 3: Subject & Lecturer -->
+        <div class="form-group-row">
+            <div class="form-group">
+                <label for="subject_id">Subject *</label>
+                <select id="subject_id" name="subject_id" required>
+                    <option value="">Select Subject</option>
+                    {% for s in subjects %}
+                        <option value="{{ s.id }}">{{ s.subject_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="lecture_id">Lecturer *</label>
+                <select id="lecture_id" name="lecturer_id" required>
+                    <option value="">Select Lecturer</option>
+                    {% for l in lecturers %}
+                        <option value="{{ l.id }}">{{ l.lecturer_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <!-- Row 4: Location & Schedule Type -->
+        <div class="form-group-row">
+            <div class="form-group">
+                <label for="location">Location *</label>
+                <input type="text" id="location" name="location" placeholder="Enter location" required>
+            </div>
+            <div class="form-group">
+                <label for="scheduleType">Schedule Type *</label>
+                <select id="scheduleType">
+                    <option value="weekly">Weekly (Semester Schedule)</option>
+                    <option value="onetime">One-Time (Additional Lecture)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Row 5: Start & End Time (MOVED BEFORE TIME SLOT) -->
+        <div class="form-group-row">
+            <div class="form-group">
+                <label for="start_time">Start Time *</label>
+                <input type="time" id="start_time" name="start_time" required>
+            </div>
+            <div class="form-group">
+                <label for="end_time">End Time *</label>
+                <input type="time" id="end_time" name="end_time" required>
+            </div>
+        </div>
+
+        <!-- Weekly Schedule Fields -->
+        <div id="weeklyFields">
+            <div class="form-group-row" style="margin-bottom: 16px;">
+                <div class="form-group">
+                    <label for="day">Day of Week *</label>
+                    <select id="day" name="day">
+                        <option value="">Select Day</option>
+                        <option value="Monday">Monday</option>
+                        <option value="Tuesday">Tuesday</option>
+                        <option value="Wednesday">Wednesday</option>
+                        <option value="Thursday">Thursday</option>
+                        <option value="Friday">Friday</option>
+                        <option value="Saturday">Saturday</option>
+                        <option value="Sunday">Sunday</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="time_slot">Time Slot (Auto-generated)</label>
+                    <input type="text" id="time_slot" name="time_slot" placeholder="Auto-filled from Start & End Time" readonly style="background:rgba(79,70,229,0.04); cursor:default;">
+                </div>
+            </div>
+            <div class="form-group-row" style="margin-bottom: 16px;">
+                <div class="form-group">
+                    <label for="semester_start_date">Semester Start Date *</label>
+                    <input type="date" id="semester_start_date" name="semester_start_date">
+                </div>
+                <div class="form-group">
+                    <label for="semester_end_date">Semester End Date *</label>
+                    <input type="date" id="semester_end_date" name="semester_end_date">
+                </div>
+            </div>
+            <!-- Auto-calculated week info -->
+            <div id="weekInfoBox">
+                <strong>📅 Semester Schedule:</strong> <span id="weekInfoText"></span>
+            </div>
+        </div>
+
+        <!-- One-Time Lecture Date -->
+        <div id="onetimeFields" style="display:none;">
+            <div class="form-group-row" style="margin-bottom: 16px;">
+                <div class="form-group">
+                    <label for="lecture_date">Lecture Date *</label>
+                    <input type="date" id="lecture_date" name="lecture_date">
+                </div>
+                <div class="form-group">
+                    <!-- spacer -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Row 6: Attendance Mark Time -->
+        <div class="form-group-row">
+            <div class="form-group">
+                <label for="attendance_mark_time">Attendance Mark Time (mins) *</label>
+                <input type="number" min="0" id="attendance_mark_time" name="attendance_mark_time" placeholder="e.g. 15" required><br>
+            </div>
+            <div class="form-group">
+                <!-- spacer -->
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Modal Actions -->
+    <div class="modal-actions">
+        <button type="submit" class="btn-save">Save Timetable</button>
+        <button type="button" id="closeModalBtn" class="btn-close">Close</button>
+    </div>
+   </form>
+  </div>
+ </div>
+
+
+
+    <!-- CANCEL MODAL (FIXED) -->
+    <div id="cancelModal" class="modal">
+        <div class="modal-card">
+
+            <div class="timetabel-form-title">
+                <h3>🚫 Cancel Lecture</h3>
+                <span class="crossBtn" id="cancelModalClose">&times;</span>
+            </div>
+
+            <div class="cancel-modal-content">
+                <p>Are you sure you want to cancel this lecture?</p><br>
+
+                <div id="cancelLectureInfo" class="info-box"></div>
+
+                <div class="cancel-reason-group">
+                    <label for="cancelReasonInput">Reason for Cancellation:</label>
+                    <input type="text" id="cancelReasonInput" placeholder="Enter reason (optional)">
+                </div>
+
+                <div class="modal-actions">
+                    <button id="confirmCancelBtn" class="btn-danger">
+                        Yes Cancel
+                    </button>
+
+                    <button id="cancelModalCloseBtn" class="btn-close">
+                        Go Back
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+  <script src="{{ url_for('static', filename='js/timetabel.js') }}"></script>
+
+</body>
+</html>
